@@ -1,9 +1,160 @@
-\documentclass[UTF8]{ctexart}
-%这里是导言区
+\documentclass[UTF8,a4paper]{ctexart}
+
+%以下是导言区
+\usepackage{geometry}
+\geometry{left=2.5cm,right=2.0cm,top=2.5cm,bottom=2.0cm}
+\usepackage{listings}
+%以上是导言区
+
 \begin{document}
 \title{LaTex教程}
 \author{amos}
 \date{\today}
 \maketitle
-    this is a tutorial.
+
+\begin{abstract}
+    本教程按文档的格式要素来说明latex语法。
+\end{abstract}
+    
+\section{标题与目录}
+    \subsection{概述}
+        本节的主要内容有：
+            \begin{itemize}
+                \item 文档的结构化
+                \item 标签与交叉引用
+                \item 设置标题样式
+            \end{itemize}
+        在book和report文档类中，可以使用\textbackslash part、\textbackslash chaper、\textbackslash section、\textbackslash subsection、\textbackslash subsubsection、\textbackslash paragraph、\textbackslash subparagraph这些章节命令，在\textbackslash article文档类中，除了\textbackslash chapter不能用，其他都可以用。
+
+        用\textbackslash tableofcontents命令可以自动从各章节标题生成目录。在导言区中用下面的命令载入hyperref宏包\textbackslash usepackage\{hyperref\}就可以让生成的目录有链接，点击时会自动跳转到该章节。而且也会使得生成的pdf文件带有目录书签。
+
+    \subsection{文档的结构化}
+        在ctexart/article文类中，Latex提供了如下的小标题级别和对应的命令：
+
+            \begin{enumerate}
+                \item section(\textbackslash section\{节标题\})
+                \item subsection(\textbackslash subsection\{小节标题\})
+                \item subsubsection(\textbackslash subsection\{小小节标题\})
+                \item paragraph(\textbackslash paragraph\{段落标题\})
+                \item subparagraph(\textbackslash subparagraph\{小段落标题\})
+            \end{enumerate}
+    
+        前三个级别是有编号的，后两个则没有编号。效果大概是这样的：
+
+            \begin{tabular}{|c|}
+                \hline
+                \parbox{\textwidth}{
+                    \section*{1.节}
+                        这里一般是这一节的概述
+                        \subsection*{1.1小节}
+                            这里是第一小节的内容
+                            \subsubsection*{1.1.1小小节}
+                                第一小节中的第一点
+                                \paragraph{段落}
+                                    这是一个段落
+                                    \subparagraph{小段落}
+                                        这是一个小段落
+                    \section*{2.又一节}
+                        第二节概述
+                        \subsection*{2.1又一小节}
+                            第二节的第一小节
+                }\\
+                \hline
+            \end{tabular}{|c|}
+
+        在编译过程中，引擎会自动为这个节标题进行编号。这是一个非常好用的特性。如果你的文章有十个section，你想在第二个和第三个之间加入一个setion，只需要直接往里面加就行了，完全不用考虑编号的事。再比如有几个section你想要加深一级变成subsection，再合并成一个section，在LaTex这种组织结构下可以很轻松地完成。
+
+        在编制目录的时候，我们有时候不希望给某一节编号，也不想它进入目录。这个时候只需要在命令后加上一个星号（*）就可以了，比如\textbackslash section*\{不编目的小节\}。
+
+        在ctexart/report和ctexbook/book文类中，会有更高的节级别，比如part、chapter之类。chapter在学术论文的写作中还算常用，比section高一个级别，如果篇幅比较大的话可以更有效的组织文档。写作学术论文的时候一般会有模板可以使用，这时只要按照模板的说明操作就可以了。
+
+    \subsection{标签与交叉引用}
+        在行文过程中，我们可能需要引用自己前面写过的结果。比如“在第一章第5节我们提到......”“请参见我在第327页做的推导......”之类的。在这种情况下，自动化的需求是非常高的。如果说我手动输入了这些数字，那么一旦文档结构有变动,产生的工作量将非常可观。这些东西你还不能不改，因为你不改的话完全就是错的，本来想引用第3节结果写的是“见第2节”。但这在LaTex中完全不是问题。我们可以用标签（label）和交叉引用（cross reference）来解决这个问题。
+
+        标签与交叉引用的基本思路是这样的：首先把我需要引用的章节用\textbackslash label\{标签名称\}进行标记，然后再需要引用它的时候用\textbackslash ref\{标签名称\}进行引用。这样一来，引擎在进行编译的时候就需要编译两次：第一次生成所有章节的编号，第二次再把这些编号填充到相应的位置。所以如果使用了这个命令但只编译了一次，这些引用的地方都将显示为问号。这对所有交叉引用都是一样的。下面我们来看一个使用的例子：
+
+            \begin{tabular}{|c|}
+                \hline
+                \parbox{\textwidth}{
+
+                }\\
+                \hline
+            \end{tabular}
+
+    \subsection{设置标题样式}
+        标题样式的设置分为三个部分，标题之前、标题、标题之后。其中标题包括标签和标题文字。标签为标题文字之前的内容，包括标题序号。
+
+        titlesec 宏包提供了\textbackslash titleformat命令用来设置各级标题的样式，调用形式如下：
+
+            \begin{tabular}{|c|}
+                \hline
+                \parbox{\textwidth}{
+                    \textbackslash titleformat\{<command>\}[<shape>]\{<format>\}\{<label>\}\{<sep>\}\{<before-code>\}\{<after-code>\}
+                }\\
+                \hline
+            \end{tabular}
+        
+        \begin{itemize}
+            \item <command> 为被定义的标题命令。如：\textbackslash part, \textbackslash chapter, \textbackslash section, \textbackslash subsection, \textbackslash subsubsection, \textbackslash paragraph 或者 \textbackslash subparagraph。
+            \item <shape> 为标题形式。
+                \begin{itemize}
+                    \item  hang 是默认的标题形式（和标准的\textbackslash section 形式一样）。
+                    \item display 将标签单独作为一段（和标准的 \textbackslash chapter 形式一样）。
+                    \item runin 下方段落和标题同行（和标准的\textbackslash paragraph 形式一样）。
+                    \item frame 和 display 模式一样，只不过内容用一个盒子包裹。
+                    \item block 将整个标题排版在一个没有附加形式的块（段落）中。在居中标题和特殊排版（包括图片工具）时有用。
+                    \item leftmargin,rightmargin,drop,wrap用来将标题垂直排版在左侧或右侧，可能会造成重叠。具体用法和注意事项请参考源手册。
+                \end{itemize}
+            \item <format> 指定一个用在整个标题（包括标题文字和标签）的格式。如我们正文的文字使用罗马字体族，整个标题使用无衬线字体族，可以在这里输入\textbackslash sffamily 进行切换。这个地方可以添加一些垂直元素（对于某些垂直形式[shape]的标题为水平元素），这些元素会出现在标题上方空白的下方。
+            \item <label> 用来定义标签。如默认section的label为 \textbackslash thesection\textbackslash quad,你可以使用 \textbackslash thesection.\textbackslash quad 在标签和文字之间加上一个点。如果你的标题等级中不需要 label。你可以将这个设置为空，但不建议这么做。因为这并不会抑制目录及栏外标题中的 label。
+            \item <sep> 定义标签和标题文字之间的水平距离。必须有一个值，不能为空（可以为 0pt）。在 display shape 中为垂直距离。在 frame shape 中为标题文字到框（frame）之间的距离。在带星号的标题命令中 <label> 和 <sep> 都会被忽略。如果你使用图片之类的元素，请将该参数设置为 0 pt。
+            \item <before-code> 出现在标题文字之前的代码，标题文字会作为参数自动的传递给最后一个命令。然而，如果加载包的时候使用了 explicit 参数，必须显示的使用 \#1 来替代标题文字。这在标题文字出现在命令中间时十分有用。
+            \item <after-code> 出现在标题文字之后的代码。用于排版的元素在 hang,block 和 display 形式时为垂直模式。在 runin 和 leftmargin 为水平模式。其他模式下被忽略。
+        \end{itemize}
+        
+        下面是一个排版示例：
+
+        \begin{tabular}{|c|}
+            \hline
+            \parbox{\textwidth}{
+                \textbackslash titleformat\{\textbackslash section\}[hang]\{\textbackslash sffamily\textbackslash vbox\{\textbackslash titlerule\}\}\{\textbackslash centering\textbackslash zihao\{-3\}\textbackslash bfseries \textbackslash S\textbackslash \textbackslash thesection\textbackslash enspace\}\{0pt\}\{\textbackslash zihao\{-3\}\textbackslash bfseries\}[\textbackslash vbox\{\textbackslash titlerule \textbackslash vspace\{1pt\} \textbackslash titlerule\}]
+            }\\
+            \hline
+        \end{tabular}
+       
+
+
+
+    
+  %字体字号加粗斜体下划线，字体颜色，背景色
+        
+    \section{页面设置}
+    \subsection{页面大小和页边距}
+    默认的页面大小是A4纸，输入以下内容，如果不进行设置的话，latex采用默认的页面大小，也即A4纸。
+    
+    \begin{lstlisting}
+        \documentclass[]{article}
+        \begin{document}
+            Latex
+        \end{document}
+    \end{lstlisting}
+
+    \part{代码块}
+
+
+
+    \textbackslash documentclass[11pt,twoside,a4paper]\{article\}
+
+    这条命令指定 LaTeX 使用论文版式，11 磅大小的字体来排版此文档，并且得到适合打印在 A4 纸上的输出结果。
+    \newline
+\begin{tabular}{|c|c|}
+    \hline
+    参数&含义\\
+    \hline
+    article &排版科技期刊、短报告、程序文档、邀请函等。\\
+    report&排版多章节的长报告、短篇的书籍、博士论文等。\\
+    book&排版书籍。\\
+    slides&\parbox{\textwidth}{排版幻灯片。其中使用了较大的 sans serif字体。\\也可以考虑使用 FoilTEX 来得到相同的效果。}\\
+    \hline
+\end{tabular}
 \end{document}
